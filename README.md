@@ -4,6 +4,8 @@ A dirty web-based workaround for keeping computers awake.
 
 This works by playing an inaudible-to-hooman tone (10Hz) indefinitely in background when toggled on.
 
+![](./doc_assets/screenshot.png)
+
 
 
 ## Featuring

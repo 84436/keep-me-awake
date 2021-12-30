@@ -15,17 +15,17 @@
  * This whole snippet will create a simple tone generator then starts
  * immediately. The resulting audio will not be played until
  * the generator is connected to the sink (audio context destination.)
- * 
+ *
  * Keeping something plays in the background is one of the
  * workaround for keeping the computer awake the whole time
  * without resorting to power settings (n/b: you won't be
  * able to fiddle those stuff in a coroporate environment.)
- * 
+ *
  * Read about Web Audio API @ MDN for more info.
  * The following is roughly the audio graph for this app:
  *     [Oscillator] -> [Gain] x--> <Sink>
  *     x = where the toggle is
- * 
+ *
  * TODO: there's a better way to keep the screen awake: get a wakelock
  * from "navigator" object. Apparently Chromium only.
  */
@@ -70,3 +70,9 @@ export default {
     },
 };
 </script>
+
+<style>
+html {
+    overflow-y: hidden !important;
+}
+</style>
