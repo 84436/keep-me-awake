@@ -13,6 +13,7 @@ export default defineConfig({
             autoImport: true,
         }),
     ],
+    base: "/keep-me-awake/",
     define: { "process.env": {} },
     resolve: {
         alias: {
@@ -20,16 +21,16 @@ export default defineConfig({
         },
     },
     /* remove the need to specify .vue files https://vitejs.dev/config/#resolve-extensions
-  resolve: {
-    extensions: [
-      '.js',
-      '.json',
-      '.jsx',
-      '.mjs',
-      '.ts',
-      '.tsx',
-      '.vue',
-    ]
-  },
-  */
+    resolve: {
+        extensions: [
+            '.js',
+            '.json',
+            '.jsx',
+            '.mjs',
+            '.ts',
+            '.tsx',
+            '.vue',
+        ]
+    },
+    */
 });
