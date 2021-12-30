@@ -10,7 +10,8 @@
 </template>
 
 <script>
-/* Apparently "window" object is not available inside a Vue component
+/**
+ * Apparently "window" object is not available inside a Vue component
  * (probably for good reason)
  * This whole snippet will create a simple tone generator then starts
  * immediately. The resulting audio will not be played until
@@ -22,6 +23,8 @@
  * able to fiddle those stuff in a coroporate environment.)
  *
  * Read about Web Audio API @ MDN for more info.
+ * https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API
+ *
  * The following is roughly the audio graph for this app:
  *     [Oscillator] -> [Gain] x--> <Sink>
  *     x = where the toggle is
@@ -55,6 +58,38 @@ const setUpAudio = () => {
     soundOscillator.start();
 };
 
+/**
+ * For good measure, we'll also try to acquire wakelocks.
+ * Currently only Chromium-based browsers are supported.
+ * https://developer.mozilla.org/en-US/docs/Web/API/Screen_Wake_Lock_API
+ */
+var wakelock = null;
+let setUpWakelock = () => {};
+let releaseWakelock = () => {};
+
+if ("wakeLock" in navigator) {
+    setUpWakelock = () => {
+        try {
+            navigator.wakeLock.request("screen").then((wl) => {
+                wakelock = wl;
+            });
+            console.log("Wakelock acquired.");
+        } catch (error) {
+            console.error(`Cannot acquire wakelock: ${error.message}`);
+        }
+    };
+
+    releaseWakelock = () => {
+        wakelock &&
+            wakelock.release().then(() => {
+                wakelock = null;
+                console.log("Wakelock released.");
+            });
+    };
+} else {
+    console.warn("Wakelocks are not supported in this browser. Sorry.");
+}
+
 export default {
     name: "App",
     data: () => ({
@@ -71,12 +106,14 @@ export default {
     watch: {
         isAwake(newVal) {
             if (newVal) {
+                setUpWakelock();
                 // https://developer.chrome.com/blog/autoplay/#webaudio
-                if (!audioContext) setUpAudio()
+                if (!audioContext) setUpAudio();
                 audioContext.resume().then(() => {
-                    audioGain.connect(audioContext.destination);    
+                    audioGain.connect(audioContext.destination);
                 });
             } else {
+                releaseWakelock();
                 audioGain.disconnect(audioContext.destination);
             }
         },
