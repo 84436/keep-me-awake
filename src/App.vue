@@ -30,29 +30,38 @@
  * from "navigator" object. Apparently Chromium only.
  */
 
-// Creates an audio context
-var audioContext = new (window.AudioContext || window.webkitAudioContext)();
+var audioContext = null;
+var audioGain = null;
+var soundOscillator = null;
 
-// Create a gain node,
-// which controls the volume of whatever gets passed thru this node
-var audioGain = audioContext.createGain();
-audioGain.gain.value = 1.0;
+const setUpAudio = () => {
+    // Creates an audio context
+    audioContext = new (window.AudioContext || window.webkitAudioContext)();
 
-// Create an oscillator node (aka fancy tone generator)
-// that plays a 10Hz tone, then connect it to gain node
-var soundOscillator = audioContext.createOscillator();
-soundOscillator.frequency.value = 10;
-soundOscillator.connect(audioGain);
+    // Create a gain node,
+    // which controls the volume of whatever gets passed thru this node
+    audioGain = audioContext.createGain();
+    audioGain.gain.value = 0.1;
 
-// We can't start() the oscillator a second time once it's stop()'ed,
-// so we'll keep it "playing" indefinitely in background.
-// We'll connect() it to sink when we actually need the audio.
-soundOscillator.start();
+    // Create an oscillator node (aka fancy tone generator)
+    // that plays a 10Hz tone, then connect it to gain node
+    soundOscillator = audioContext.createOscillator();
+    soundOscillator.frequency.value = 10;
+    soundOscillator.connect(audioGain);
+
+    // We can't start() the oscillator a second time once it's stop()'ed,
+    // so we'll keep it "playing" indefinitely in background.
+    // We'll connect() it to sink when we actually need the audio.
+    soundOscillator.start();
+};
 
 export default {
     name: "App",
     data: () => ({
         isAwake: false,
+        audioContext: null,
+        audioGain: null,
+        soundOscillator: null,
     }),
     computed: {
         theme() {
@@ -62,7 +71,11 @@ export default {
     watch: {
         isAwake(newVal) {
             if (newVal) {
-                audioGain.connect(audioContext.destination);
+                // https://developer.chrome.com/blog/autoplay/#webaudio
+                if (!audioContext) setUpAudio()
+                audioContext.resume().then(() => {
+                    audioGain.connect(audioContext.destination);    
+                });
             } else {
                 audioGain.disconnect(audioContext.destination);
             }
