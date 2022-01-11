@@ -1,5 +1,9 @@
 # `keep-me-awake`
 
+**Try it out**: **[GitHub Pages](https://84436.github.io/keep-me-awake)** | ~~[CloudFlare Pages](#)~~ (broken, willfix)
+
+
+
 A dirty web-based workaround for keeping computers awake.
 
 This works by playing ~~an inaudible-to-hooman tone (10Hz)~~ a 10-second empty video (with a 10Hz tone @ -40dB) on loop in the background when toggled on. The video is not visible on the page.
