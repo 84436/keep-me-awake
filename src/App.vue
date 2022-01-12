@@ -1,10 +1,9 @@
 <template>
     <v-app :theme="theme">
-        <div class="d-flex flex-column justify-center align-center" style="height: 100vh">
+        <div id="app-element">
             <v-icon v-if="isAwake" size="128">mdi-white-balance-sunny</v-icon>
             <v-icon v-else size="128">mdi-power-sleep</v-icon>
-            <div class="virtual-spacer my-4"></div>
-            <v-switch color="black" class="flex-grow-0" v-model="isAwake" label="Keep me awake"></v-switch>
+            <v-switch color="black" class="flex-grow-0 ma-0 pa-0" dense v-model="isAwake" label="Keep me awake" :hide-details="true"></v-switch>
             <video loop id="video-element" src="/blank.mp4"></video>
         </div>
     </v-app>
@@ -46,7 +45,23 @@ export default {
 html {
     overflow-y: hidden !important;
 }
+#app-element {
+    height: 100vh !important;
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    align-items: center;
+    row-gap: 16px;
+}
+@media screen and (max-height: 300px) {
+    #app-element {
+        flex-flow: row;
+        column-gap: 32px;
+    }
+}
+
 #video-element {
-    visibility: collapse !important;
+    /* visibility: collapse !important; */
+    display: none !important;
 }
 </style>
